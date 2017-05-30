@@ -19,7 +19,7 @@ class CpJsPlugin extends BasePlugin
 
     public function getDescription()
     {
-        return 'Add custom JavaScript to your Control Panel.';
+        return 'Add custom JavaScript to your Control Panel. Customized by Roy.';
     }
 
     public function getDocumentationUrl()
@@ -95,10 +95,13 @@ $(function () {
         $settings = $this->getSettings();
         if (trim($settings->jsFile)) {
             $filepath = craft()->config->parseEnvironmentString($settings->jsFile);
-            if ($hash = @sha1_file($filepath)) {
-                craft()->templates->includeJsFile($filepath.'?e='.$hash);
-            } else {
-                craft()->templates->includeJsFile($filepath);
+            $filepathList = explode(',', $filepath);
+            foreach ($filepathList as $path) {
+                if ($hash = @sha1_file($path)) {
+                    craft()->templates->includeJsFile($path.'?e='.$hash);
+                } else {
+                    craft()->templates->includeJsFile($path);
+                }
             }
         }
         if (trim($settings->additionalJs)) {
